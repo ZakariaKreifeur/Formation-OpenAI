@@ -1,35 +1,18 @@
-from openai import OpenAI
 import streamlit as st
 
-client = OpenAI()
+path = "root/pages/"
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+pg = st.navigation([
+    st.Page("pages/Home.py", icon=":material/home:"), 
+    # st.Page("pages/NLP.py", title="1. Traitement du Langage Naturel"),
+    st.Page("pages/OpenAI.py", title="1. Chat OpenAI"), 
+    st.Page("pages/DALL-E.py", title="2. Génération d'Images DALL-E"),
+    st.Page("pages/Article_Generator.py", title="3. Générateur d'articles"),
+    st.Page("pages/Whisper.py", title="4. Transcription Audio"),
+    # st.Page("pages/Fine_Tuning.py", title="5. Ajustement du Modèle"),
+    # st.Page("pages/Final_Exercise.py", title="6. Exercice Final"),
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+]) 
 
-if prompt := st.chat_input("Entrez votre message"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    with st.chat_message("user"):
-        st.markdown(prompt)
-    
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        message_placeholder.markdown("Génération de la réponse...")
-        
-        try:
-            completion = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": prompt}]
-            )
-            response = completion.choices[0].message.content
-            
-            message_placeholder.markdown(response)
-            
-            st.session_state.messages.append({"role": "assistant", "content": response})
-        
-        except Exception as e:
-            message_placeholder.markdown(f"Erreur : {str(e)}")
+# Exécution de la navigation
+pg.run()
